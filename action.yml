@@ -1,0 +1,27 @@
+name: 'Directory re-creator'
+description: |
+  USE WITH CAUTION!
+  This action removes and re-creates a directory including all files and sub-directories within.
+  If no directory is specified, the github.workspace directroy will be used.
+author: 'Peder Schmedling'
+inputs:
+  directory:
+    description: 'The directory to remove and re-create.'
+    required: false
+    default: '${{ github.workspace }}'
+runs:
+  using: 'composite'
+  steps:
+    - shell: bash
+      run: |
+        echo 'Re-creating directory: ${{ inputs.directory }}'
+        echo '::group::List directory contents before cleanup'
+        ls -lah ${{ inputs.directory }}
+        echo '::endgroup::'
+        echo '::group::Perform cleanup'
+        rm -rf ${{ inputs.directory }}
+        mkdir u=rwx,go= ${{ inputs.directory }}
+        echo '::endgroup::'
+        echo '::group::List directory contents after cleanup'
+        ls -lah ${{ inputs.directory }}
+        echo '::endgroup::'
