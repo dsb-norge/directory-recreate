@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import * as fs from 'fs'
 
+/* main thing */
 export async function run () {
   try {
     const directory = core.getInput('directory') || process.env.GITHUB_WORKSPACE

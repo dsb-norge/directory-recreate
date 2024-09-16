@@ -24961,6 +24961,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = run;
 const core = __importStar(__nccwpck_require__(2186));
 const fs = __importStar(__nccwpck_require__(7147));
+/* main thing */
 async function run() {
     try {
         const directory = core.getInput('directory') || process.env.GITHUB_WORKSPACE;
