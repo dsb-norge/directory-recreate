@@ -2,6 +2,11 @@
   "name": "directory-recreate",
   "version": "1.0.0",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": " https://github.com/dsb-norge/directory-recreate",
+    "directory": "src"
+  },
   "scripts": {
     "package": "npx ncc build src/index.ts -o dist --source-map --license licenses.txt",
     "lint": "npx eslint . --ext .ts",
