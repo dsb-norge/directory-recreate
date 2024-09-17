@@ -7,7 +7,8 @@
     "lint": "npx eslint . --ext .ts",
     "lint:fix": "npx eslint . --ext .ts --fix",
     "test": "npx jest",
-    "prepare": "husky"
+    "prepare": "husky",
+    "all": "npm run lint && npm run test && npm run package"
   },
   "keywords": [],
   "author": "Chris Aurora Neumann Ruud",

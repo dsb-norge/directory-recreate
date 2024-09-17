@@ -1,4 +1,2 @@
-npm run lint
-npm run test
-npm run package
+npm run all
 git add dist/*
