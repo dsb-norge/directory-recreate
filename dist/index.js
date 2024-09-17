@@ -24961,6 +24961,18 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = run;
 const core = __importStar(__nccwpck_require__(2186));
 const fs = __importStar(__nccwpck_require__(7147));
+/**
+ * Main function to run the cleanup and optional recreation of a directory.
+ *
+ * This function performs the following steps:
+ * 1. Retrieves the directory path and recreate flag from inputs or environment variables.
+ * 2. Lists the contents of the directory before cleanup.
+ * 3. Deletes the directory if it exists.
+ * 4. Lists the contents of the directory after cleanup.
+ * 5. Optionally recreates the directory if the recreate flag is set.
+ *
+ * @throws Will throw an error if the directory is not specified and GITHUB_WORKSPACE is not set.
+ */
 async function run() {
     try {
         const directory = core.getInput('directory') || process.env.GITHUB_WORKSPACE;
@@ -25007,6 +25019,7 @@ async function run() {
         core.setFailed(error.message);
     }
 }
+// Execute the main function
 run();
 
 

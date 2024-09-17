@@ -6,7 +6,9 @@
     "package": "npx ncc build src/index.ts -o dist --source-map --license licenses.txt",
     "lint": "npx eslint . --ext .ts",
     "lint:fix": "npx eslint . --ext .ts --fix",
-    "test": "npx jest"
+    "test": "npx jest",
+    "prepare": "husky",
+    "all": "npm run lint && npm run test && npm run package"
   },
   "keywords": [],
   "author": "Chris Aurora Neumann Ruud",
@@ -46,6 +48,7 @@
     "@types/node": "22.5.4",
     "@vercel/ncc": "0.38.1",
     "eslint": "8.57.0",
+    "husky": "9.1.6",
     "jest": "29.7.0",
     "ts-jest": "29.2.5",
     "typescript": "5.6.2"
