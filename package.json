@@ -8,7 +8,7 @@
     "directory": "src"
   },
   "scripts": {
-    "package": "npx ncc build src/index.ts -o dist --source-map --license licenses.txt",
+    "package": "npx ncc build src/index.ts -m -o dist --license licenses.txt",
     "lint": "npx eslint . --ext .ts",
     "lint:fix": "npx eslint . --ext .ts --fix",
     "test": "npx jest",

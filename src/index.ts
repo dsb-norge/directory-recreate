@@ -1,4 +1,4 @@
-import * as core from '@actions/core'
+import { getInput, startGroup, endGroup, info, setFailed } from '@actions/core'
 import * as fs from 'fs'
 
 /**
@@ -15,49 +15,49 @@ import * as fs from 'fs'
  */
 export async function run () {
   try {
-    const directory = core.getInput('directory') || process.env.GITHUB_WORKSPACE
-    const recreate = core.getInput('recreate') !== 'false'
+    const directory = getInput('directory') || process.env.GITHUB_WORKSPACE
+    const recreate = getInput('recreate') !== 'false'
 
     if (!directory) {
       throw new Error('Directory is not specified and GITHUB_WORKSPACE is not set.')
     }
 
-    core.startGroup('List directory contents before cleanup')
+    startGroup('List directory contents before cleanup')
     if (!fs.existsSync(directory)) {
-      core.info(`The directory "${directory}" does not exist, nothing to delete.`)
-      core.endGroup()
+      info(`The directory "${directory}" does not exist, nothing to delete.`)
+      endGroup()
     } else {
       fs.readdirSync(directory).forEach(file => {
-        core.info(file)
+        info(file)
       })
-      core.endGroup()
+      endGroup()
 
-      core.startGroup('Perform Delete')
-      core.info(`Deleting directory: "${directory}"`)
+      startGroup('Perform Delete')
+      info(`Deleting directory: "${directory}"`)
       fs.rmSync(directory, { recursive: true, force: true })
-      core.endGroup()
+      endGroup()
 
-      core.startGroup('List directory contents after cleanup')
-      core.info(`Listing directory: "${directory}"`)
+      startGroup('List directory contents after cleanup')
+      info(`Listing directory: "${directory}"`)
       if (!fs.existsSync(directory)) {
-        core.info(`The directory "${directory}" does not exist.`)
+        info(`The directory "${directory}" does not exist.`)
       } else if (fs.readdirSync(directory).length === 0) {
-        core.info(`The directory "${directory}" is empty.`)
+        info(`The directory "${directory}" is empty.`)
       } else {
         fs.readdirSync(directory).forEach(file => {
-          core.info(file)
+          info(file)
         })
       }
     }
 
     if (recreate) {
-      core.startGroup('Create directory')
-      core.info(`Creating directory: "${directory}"`)
+      startGroup('Create directory')
+      info(`Creating directory: "${directory}"`)
       fs.mkdirSync(directory, { recursive: true, mode: 0o755 })
-      core.endGroup()
+      endGroup()
     }
   } catch (error) {
-    core.setFailed((error as Error).message)
+    setFailed((error as Error).message)
   }
 }
 
