@@ -20,7 +20,7 @@ export async function run () {
     const recreate = getInput('recreate') !== 'false'
 
     if (!directory) {
-      throw new Error('Directory is not specified and GITHUB_WORKSPACE is not set.')
+      throw new Error('Directory is not TODO specified and GITHUB_WORKSPACE is not set.')
     }
 
     startGroup('List directory contents before cleanup')
