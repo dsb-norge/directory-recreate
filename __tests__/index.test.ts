@@ -56,7 +56,7 @@ describe('run', () => {
 
     await run()
 
-    expect(mockSetFailed).toHaveBeenCalledWith('Directory is not TODO specified and GITHUB_WORKSPACE is not set.')
+    expect(mockSetFailed).toHaveBeenCalledWith('Directory is not specified and GITHUB_WORKSPACE is not set.')
 
     process.env.GITHUB_WORKSPACE = originalGithubWorkspace
   })

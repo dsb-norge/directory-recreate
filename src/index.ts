@@ -4,7 +4,6 @@ import * as fs from 'fs'
 /**
  * Main function to run the cleanup and optional recreation of a directory.
  *
- * TODO revert this, just to force recreation outside git hooks
  * This function performs the following steps:
  * 1. Retrieves the directory path and recreate flag from inputs or environment variables.
  * 2. Lists the contents of the directory before cleanup.
@@ -20,7 +19,7 @@ export async function run () {
     const recreate = getInput('recreate') !== 'false'
 
     if (!directory) {
-      throw new Error('Directory is not TODO specified and GITHUB_WORKSPACE is not set.')
+      throw new Error('Directory is not specified and GITHUB_WORKSPACE is not set.')
     }
 
     startGroup('List directory contents before cleanup')
