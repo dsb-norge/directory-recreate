@@ -17,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: Run build-and-test workflow
@@ -50,7 +50,7 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git add dist/
             git commit -m 'Update dist folder'
-            git push origin HEAD:${{ github.ref }}
+            git push origin HEAD:${{ github.head_ref }}          
           else
             echo "No changes to commit"
           fi
