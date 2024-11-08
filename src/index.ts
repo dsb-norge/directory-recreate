@@ -22,7 +22,7 @@ export async function run () {
       throw new Error('Directory is not specified and GITHUB_WORKSPACE is not set.')
     }
 
-    startGroup('List directory contents before cleanup')
+    startGroup('List directory contents before cleanup TODO')
     if (!fs.existsSync(directory)) {
       info(`The directory "${directory}" does not exist, nothing to delete.`)
       endGroup()
