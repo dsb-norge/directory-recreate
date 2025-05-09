@@ -49,11 +49,16 @@ describe('run', () => {
   })
 
   it('should throw an error if directory is not specified and GITHUB_WORKSPACE is not set', async () => {
+    const originalGithubWorkspace = process.env.GITHUB_WORKSPACE
+    delete process.env.GITHUB_WORKSPACE
+
     mockGetInput.mockReturnValue('')
 
     await run()
 
     expect(mockSetFailed).toHaveBeenCalledWith('Directory is not specified and GITHUB_WORKSPACE is not set.')
+
+    process.env.GITHUB_WORKSPACE = originalGithubWorkspace
   })
 
   it('should not delete or create the directory if it does not exist and recreate is false', async () => {
