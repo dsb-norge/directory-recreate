@@ -11,51 +11,27 @@
     "package": "npx ncc build src/index.ts -m -o dist --license licenses.txt",
     "lint": "npx eslint . --ext .ts",
     "lint:fix": "npx eslint . --ext .ts --fix",
-    "test": "npx jest",
-    "prepare": "husky",
+    "test": "node --experimental-strip-types --test __tests__/*.test.ts",
+    "prepare": "simple-git-hooks",
     "all": "npm run lint && npm run test && npm run package"
   },
   "keywords": [],
-  "author": "Chris Aurora Neumann Ruud",
-  "contributors": [
-    "Peder Schmedling"
-  ],
+  "author": "DSB Norge",
   "license": "ISC",
   "description": "This action removes and re-creates a directory including all files and sub-directories within.",
-  "jest": {
-    "preset": "ts-jest",
-    "verbose": true,
-    "clearMocks": true,
-    "testEnvironment": "node",
-    "moduleFileExtensions": [
-      "js",
-      "ts"
-    ],
-    "testMatch": [
-      "**/*.test.ts"
-    ],
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/"
-    ],
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    }
+  "simple-git-hooks": {
+    "pre-commit": "npm run all && git add dist/*"
   },
   "dependencies": {
-    "@actions/core": "1.11.1",
-    "@actions/github": "6.0.1"
+    "@actions/core": "^2.0.3"
   },
   "devDependencies": {
     "@dsb-norge/eslint-config-dsb-vue3-ts": "3.2.0",
-    "@types/jest": "29.5.14",
     "@types/node": "22.19.19",
     "@vercel/ncc": "0.38.4",
     "eslint": "9.39.4",
     "jiti": "2.7.0",
-    "husky": "9.1.7",
-    "jest": "29.7.0",
-    "ts-jest": "29.4.9",
+    "simple-git-hooks": "^2.13.1",
     "typescript": "5.6.3"
   }
 }
