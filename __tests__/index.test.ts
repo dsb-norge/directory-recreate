@@ -10,6 +10,9 @@ describe('run', () => {
 
   beforeEach(() => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'directory-recreate-test-'))
+    delete process.env.INPUT_DIRECTORY
+    delete process.env.INPUT_RECREATE
+    delete process.env.GITHUB_WORKSPACE
     process.exitCode = 0
   })
 
