@@ -11,7 +11,7 @@
     "package": "npx ncc build src/index.ts -m -o dist --license licenses.txt",
     "lint": "npx eslint . --ext .ts",
     "lint:fix": "npx eslint . --ext .ts --fix",
-    "test": "node --experimental-strip-types --test __tests__/*.test.ts",
+    "test": "node --experimental-strip-types --test __tests__/index.test.ts",
     "prepare": "simple-git-hooks",
     "all": "npm run lint && npm run test && npm run package"
   },
