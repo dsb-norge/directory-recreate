@@ -1,102 +1,81 @@
-import * as core from '@actions/core'
+import { describe, it, beforeEach, afterEach } from 'node:test'
+import assert from 'node:assert/strict'
 import * as fs from 'fs'
-import { run } from '../src'
-
-jest.mock('@actions/core', () => ({
-  ...jest.requireActual('@actions/core'),
-  setFailed: jest.fn(),
-  getInput: jest.fn(),
-  info: jest.fn(),
-  startGroup: jest.fn(),
-  endGroup: jest.fn()
-}))
-
-jest.mock('fs', () => {
-  const actualFs = jest.requireActual('fs')
-  return {
-    ...actualFs,
-    existsSync: jest.fn(),
-    readdirSync: jest.fn(),
-    rmSync: jest.fn(),
-    mkdirSync: jest.fn(),
-    promises: {
-      ...actualFs.promises,
-      access: jest.fn(),
-      readdir: jest.fn(),
-      rm: jest.fn(),
-      mkdir: jest.fn()
-    }
-  }
-})
+import * as os from 'os'
+import * as path from 'path'
+import { run } from '../src/run.ts'
 
 describe('run', () => {
-  let mockGetInput: jest.MockedFunction<typeof core.getInput>
-  let mockExistsSync: jest.Mock
-  let mockReaddirSync: jest.Mock
-  let mockRmSync: jest.Mock
-  let mockMkdirSync: jest.Mock
-  let mockSetFailed: jest.MockedFunction<typeof core.setFailed>
+  let tmpDir: string
 
   beforeEach(() => {
-    mockGetInput = core.getInput as jest.MockedFunction<typeof core.getInput>
-    mockExistsSync = fs.existsSync as jest.Mock
-    mockReaddirSync = fs.readdirSync as jest.Mock
-    mockRmSync = fs.rmSync as jest.Mock
-    mockMkdirSync = fs.mkdirSync as jest.Mock
-    mockSetFailed = core.setFailed as jest.MockedFunction<typeof core.setFailed>
-
-    jest.clearAllMocks()
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'directory-recreate-test-'))
+    delete process.env.INPUT_DIRECTORY
+    delete process.env.INPUT_RECREATE
+    delete process.env.GITHUB_WORKSPACE
+    process.exitCode = 0
   })
 
-  it('should throw an error if directory is not specified and GITHUB_WORKSPACE is not set', async () => {
-    mockGetInput.mockReturnValue('')
+  afterEach(() => {
+    if (fs.existsSync(tmpDir)) {
+      fs.rmSync(tmpDir, { recursive: true, force: true })
+    }
+    delete process.env.INPUT_DIRECTORY
+    delete process.env.INPUT_RECREATE
+    delete process.env.GITHUB_WORKSPACE
+    process.exitCode = 0
+  })
+
+  it('fails if directory is not specified and GITHUB_WORKSPACE is not set', async () => {
+    await run()
+
+    assert.equal(process.exitCode, 1)
+  })
+
+  it('leaves a non-existent directory alone when recreate is false', async () => {
+    const target = path.join(tmpDir, 'does-not-exist')
+    process.env.INPUT_DIRECTORY = target
+    process.env.INPUT_RECREATE = 'false'
 
     await run()
 
-    expect(mockSetFailed).toHaveBeenCalledWith('Directory is not specified and GITHUB_WORKSPACE is not set.')
+    assert.equal(fs.existsSync(target), false)
+    assert.equal(process.exitCode, 0)
   })
 
-  it('should not delete or create the directory if it does not exist and recreate is false', async () => {
-    mockGetInput.mockImplementation((name: string) => {
-      if (name === 'directory') return 'some-directory'
-      if (name === 'recreate') return 'false'
-      return ''
-    })
-    mockExistsSync.mockReturnValue(false)
+  it('deletes the directory if it exists and recreate is false', async () => {
+    fs.writeFileSync(path.join(tmpDir, 'file1'), 'a')
+    fs.writeFileSync(path.join(tmpDir, 'file2'), 'b')
+    process.env.INPUT_DIRECTORY = tmpDir
+    process.env.INPUT_RECREATE = 'false'
 
     await run()
 
-    expect(mockRmSync).not.toHaveBeenCalled()
-    expect(mockMkdirSync).not.toHaveBeenCalled()
+    assert.equal(fs.existsSync(tmpDir), false)
+    assert.equal(process.exitCode, 0)
   })
 
-  it('should delete the directory if it exists and recreate is false', async () => {
-    mockGetInput.mockImplementation((name: string) => {
-      if (name === 'directory') return 'some-directory'
-      if (name === 'recreate') return 'false'
-      return ''
-    })
-    mockExistsSync.mockReturnValue(true)
-    mockReaddirSync.mockReturnValue([ 'file1', 'file2' ])
+  it('deletes and recreates the directory if it exists and recreate is true', async () => {
+    fs.writeFileSync(path.join(tmpDir, 'file1'), 'a')
+    fs.writeFileSync(path.join(tmpDir, 'file2'), 'b')
+    process.env.INPUT_DIRECTORY = tmpDir
+    process.env.INPUT_RECREATE = 'true'
 
     await run()
 
-    expect(mockRmSync).toHaveBeenCalledWith('some-directory', { recursive: true, force: true })
-    expect(mockMkdirSync).not.toHaveBeenCalled()
+    assert.equal(fs.existsSync(tmpDir), true)
+    assert.deepEqual(fs.readdirSync(tmpDir), [])
+    assert.equal(process.exitCode, 0)
   })
 
-  it('should delete and recreate the directory if it exists and recreate is true', async () => {
-    mockGetInput.mockImplementation((name: string) => {
-      if (name === 'directory') return 'some-directory'
-      if (name === 'recreate') return 'true'
-      return ''
-    })
-    mockExistsSync.mockReturnValue(true)
-    mockReaddirSync.mockReturnValue([ 'file1', 'file2' ])
+  it('creates the directory if it does not exist and recreate is true (default)', async () => {
+    const target = path.join(tmpDir, 'new-subdir')
+    process.env.INPUT_DIRECTORY = target
 
     await run()
 
-    expect(mockRmSync).toHaveBeenCalledWith('some-directory', { recursive: true, force: true })
-    expect(mockMkdirSync).toHaveBeenCalledWith('some-directory', { recursive: true, mode: 0o755 })
+    assert.equal(fs.existsSync(target), true)
+    assert.deepEqual(fs.readdirSync(target), [])
+    assert.equal(process.exitCode, 0)
   })
 })
