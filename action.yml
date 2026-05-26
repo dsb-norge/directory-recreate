@@ -2,8 +2,8 @@ name: 'Directory re-creator'
 description: |
   USE WITH CAUTION!
   This action removes and re-creates a directory including all files and sub-directories within.
-  If no directory is specified, the github.workspace directroy will be used.
-author: 'Chris Aurora Neumann Ruud (based on Peder Schmedling)'
+  If no directory is specified, the github.workspace directory will be used.
+author: 'DSB Norge'
 inputs:
   directory:
     description: 'The directory to remove and re-create.'
