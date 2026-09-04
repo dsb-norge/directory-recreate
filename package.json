@@ -26,12 +26,12 @@
     "@actions/core": "^2.0.3"
   },
   "devDependencies": {
-    "@dsb-norge/eslint-config-dsb-vue3-ts": "3.2.0",
-    "@types/node": "22.19.20",
-    "@vercel/ncc": "0.38.4",
-    "eslint": "9.39.4",
+    "@dsb-norge/eslint-config-dsb-vue3-ts": "3.3.0",
+    "@types/node": "22.20.1",
+    "@vercel/ncc": "0.45.0",
+    "eslint": "9.39.5",
     "jiti": "2.7.0",
-    "simple-git-hooks": "^2.13.1",
+    "simple-git-hooks": "^2.14.0",
     "typescript": "5.6.3"
   }
 }
